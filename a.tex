@@ -1,3 +1,35 @@
 \section{Absurdistan Roads}
 
-Solution goes here.
+Problem summary: given a full $O(n^2)$ matrix of shortest distances in a graph,
+work out the original graph. The original is an undirected connected graph with
+$n$ vertices and $n$ edges, i.e. a tree with an extra edge.
+
+If we discard the extra edge (assume we remove the largest edge), it can be seen
+that the original graph forms an MST for the distance matrix. Justification: any
+edge $A-B$ in the matrix that is not part of the original tree will be longer
+than any edge in the original tree on a path from $A$ to $B$, since all edge
+weights are positive. Thus, we may recover all but one edges from the original
+graph by running Prim's in $O(n^2)$.
+
+For the last edge, we are allowed to print out any solution, so we need to get
+any edge that works with the given matrix $M$ and our MST. If we generate our
+own matrix $M'$ using only the MST edges, it's clear that any differences in $M$
+and $M'$ must come from that extra edge being shorter than what the MST allows
+for.
+
+Since MST has only $O(n)$ edges, we can compute our $M'$ in $O(n^2)$ by running
+DFSs from each node.
+
+If there are no differences then the extra edge in the original graph must be
+longer than what we have, and so we may report it as having a huge weight
+between any two vertices. This is valid as the MST already generates $M$.
+
+Assuming that there does exist a difference, we may take the smallest number out
+of all differing entries in $M$ and $M'$. This suffices since picking a distance
+entry that is not the smallest cannot possibly generate the smallest difference.
+
+Provided that our proof of the MST of $M$ being part of the original graph is
+correct, this must give a valid solution to the original graph. Full correctness
+of this solution is proven by submitting a bug-free code ;-)
+
+Overall this runs in $O(n^2)$ time and memory.
