@@ -1,1 +1,32 @@
-\section{h}
+\section{Highway of the Future}
+
+Problem summary: you have a bunch of cars that travel on a highway. Given
+departure times ($t_i \leq 10^4$) and velocities ($v_i \leq 100$) of these cars,
+what's the highest number of cars that cross each other at the same time? That
+is, work out the minimum number of lanes required so that crossing cars can
+travel side by side. Times and velocities are integers. The highway length is
+100 units, and we are only concerned with crossings that happen on this
+interval. There are at most $n \leq 35000$ cars.
+
+Given the above formulation, let us assume that no 2 cars share the same $t_i$
+and $v_i$ values (if they do, we simply make a car ``fatter'' in our
+calculations). It's clear that each car can cross at most 100 other cars, giving
+us a hint on how to approach this.
+
+Work out all crossings --- there are only $O(100n)$ of these, which is feasible
+if done in linear time. We... well, kind of use linear time here. Note that we
+only care about cars currently on the highway when a car enters the highway
+(when computing crossings), and cars differ only by their start time and their
+velocities. But, since velocities affect how long the cars would be on a highway
+(duh), we get that there are only $$\sum_{v=1}^{100} \frac{100}{v} \approx 100
+\log 100 < 500$$ different types of a car that can be on the highway at any
+point.
+
+This gives us a $O(500n)$ crossing calculation, which is fast enough. We iterate
+over each car in increasing order of start time while maintaining a list of cars
+currently on the highway. This list is at most 500 items in length by the above
+result and can be unordered, as long as we prune cars that have gone past the
+end of the highway.
+
+After that's done, we count the most frequent crossing time (weighted by a car's
+``fatness'' from above) and that's our answer.
