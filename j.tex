@@ -1,1 +1,30 @@
-\section{j}
+\section{Jingle Balls}
+
+Problem summary: given a binary Christmas tree with some decorations (balls),
+what's the number of balls that needs to be moved to make the tree balanced? We
+consider a tree balanced iff it's balanced in terms of balls -- left subtree and
+the right subtree must differ in ball count by no more than 1.
+
+Once again, this is a fairly straightforward DP. Since we have at most 1000
+nodes, this admits an $O(n^2)$ solution. The recurrence is based on ``how many
+balls do I need to move to make substree rooted at $X$ have $B$ balls?''.
+
+Since the ball count can only differ by at most 1, it means subtrees with an
+even number of balls have only one way of solving its children ($B/2$ each). For
+odd children, we solve both cases (send $B/2$ balls left and $B/2+1$ right, and
+the other way as well) and pick the minimum.
+
+Base case is when we are at a leaf (obviously), and a leaf state is admissible
+(i.e. leads to a valid solution) iff $0 \leq B \leq 1$. Its cost depends on
+whether the leaf has a ball and if the balance is 1. If $B = ball$, then cost is
+0 (nothing needs to be moved), and 1 otherwise (we add or remove a ball at this
+node).
+
+Note that this ends up double-counting the number of operations required
+(additions and removals are counted separately, and they come in pairs). So we
+divide the answer by 2.
+
+See code for details, this is really straightforward.\\[5mm]
+
+Oh, this doesn't even need to be DP. I forgot to add caching and it still
+passed! \#acmdata \#yolo
