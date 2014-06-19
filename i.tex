@@ -1,1 +1,29 @@
 \section{Infix to Prefix}
+
+This problem naturally decomposes into DP. Because this is ACM, having an
+$O(n^3)$ DP when $n = 1000$ is apparently legit.
+
+There are $O(n^2)$ substrings of the input, and with each operation having an
+arity of 1 or 2 means we have $O(n)$ possible ways of splitting a substring into
+the operator's arguments. We only have to ensure that each such split is valid.
+
+We then solve the problem by computing $\min$ and $\max$ values for each
+substring, defined in terms of each other. The only cases we have to consider
+depend on the first character of the string, and these are:
+
+\begin{enumerate}
+
+  \item A digit: the only option here is that this is a number without any
+  operators, so this is valid iff the entire substring has length of at most 9
+  and is entirely made up of digits.
+
+  \item A plus: addition has arity 2, so we need to try splitting the substring
+  somewhere in the middle. If that's not possible (i.e. all splits produce an
+  invalid substring), this substring itself is also invalid.
+
+  \item A minus: this is either unary 1, so we drop the first character and
+  recurse, or this is the binary - so this is the same case as the plus.
+
+\end{enumerate}
+
+This is trivially $O(n^3)$, and we did not look for a more optimised solution.
