@@ -1,1 +1,31 @@
-\section{c}
+\section{Card Trick}
+
+Problem summary: you have $n > 10$ cards arranged in a row. These cards can be
+assumed to have been chosen randomly with uniform probability. You pick one of
+the first 10 cards with uniform probability. You then skip to the next card by
+looking at the face value of a card (J, Q, K are 10, A is 11) and jumping this
+many cards forward while you can --- if not, you stop. Given a ``trace'' of this
+process (including the starting position), but not the rest of the cards, what
+is the probability that repeating this process will end on the same card?
+
+First, let us redefine $n$ to be the index of the card we want to stop at (+1
+because it's one-indexed). Clearly, this is equivalent to the original
+statement.
+
+This is a straightforward DP. If we know a card (it appears in the trace, thus
+we know its position and value), we skip to the next state: $$f(i) =
+f(i+\textrm{face}(c_i)).$$
+
+If we don't know the card, try all values (with uniform probability): $$f(i) =
+\frac{1}{13} \sum_{x \in C} f(i + \textrm{face}(x)),$$ where ``face'' is the
+face value as defined above, $c_i$ is the $i$\textsuperscript{th} card, and $C$
+is the set of all card faces ($2, 3, \dots, 10, J, Q, K, A$).
+
+The stopping case is when $i > n$, then probability is 0. When $i = n$,
+probability is 1 (we're at the goal card).
+
+This runs in $O(n)$ and uses $O(n)$ memory. Writing it bottom-up would use
+$O(1)$ memory.
+
+The final answer is spread out over first 10 cards (as per the statement), and
+thus is $$\frac{1}{10}\sum_{i=1}^{10} f(i).$$
