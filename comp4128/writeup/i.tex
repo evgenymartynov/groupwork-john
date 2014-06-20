@@ -1,5 +1,15 @@
 \section{Infix to Prefix}
 
+Problem summary: imagine you have an expression composed of numbers (up to 9
+digits), unary or binary -, binary +, and brackets. Form an expression tree from
+this, where each internal node is an operation and each leaf is a number (i.e.
+parse it and drop the brackets). Traverse this in infix order, and concatenate
+all node strings to produce a Polish notation expression. What is the smallest
+and largest value that this expression can produce?
+
+As an example, ``\texttt{--34}'' can be read as ``\texttt{(- (- 3 4))}'' or as
+``\texttt{(- (- 34))}'' or as ``\texttt{(- (- 3) 4)}''.\\
+
 This problem naturally decomposes into DP. Because this is ACM, having an
 $O(n^3)$ DP when $n = 1000$ is apparently legit.
 
@@ -9,7 +19,7 @@ the operator's arguments. We only have to ensure that each such split is valid.
 
 We then solve the problem by computing $\min$ and $\max$ values for each
 substring, defined in terms of each other. The only cases we have to consider
-depend on the first character of the string, and these are:
+depend on the first character of the substring, and these are:
 
 \begin{enumerate}
 
@@ -21,9 +31,10 @@ depend on the first character of the string, and these are:
   somewhere in the middle. If that's not possible (i.e. all splits produce an
   invalid substring), this substring itself is also invalid.
 
-  \item A minus: this is either unary 1, so we drop the first character and
+  \item A minus: this is either unary -, so we drop the first character and
   recurse, or this is the binary - so this is the same case as the plus.
 
 \end{enumerate}
 
-This is trivially $O(n^3)$, and we did not look for a more optimised solution.
+This is trivially $O(n^3)$ with $O(n^2)$ memory, and we did not look for a more
+optimised solution.
