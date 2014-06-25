@@ -1,1 +1,31 @@
-\section{b}
+\section{Battle for Silver}
+
+Problem summary: given an undirected connected planar graph with weighted vertices, 
+find the clique with the maximum value.
+
+Using the knowledge that the graph is planar we can immediately tell that all
+possible cliques contain either $n=2$, $n=3$ or $n=4$ vertices. A clique with
+$n>4$ will contain $K_5$ and therefore not be planar. In order to find the 
+maximum value clique then we must simply search for all possible cliques of 
+this size and retain the maximum value seen so far. 
+
+Checking $n=2$ cliques simply requires checking the endpoints of each edge, 
+requiring $O(E)$ steps. 
+
+To consider all cliques where $n=3$, we take each edge and consider adding 
+every vertex in the graph to it. If adding a vertex forms a clique then we 
+check its value against the current maximum found. Using an adjacency matrix, 
+a vertex addition can be checked for generation of a valid clique in constant 
+time requiring $O(VE)$ total steps for these checks.
+
+Finally, in order to consider possible cliques where $n=4$ we generate all
+possible pairings of edges where all four endpoints are distinct. With four
+distinct vertices we can then verify if they form a clique by checking if
+the six required edges are present. Once again, using an adjacency matrix
+allows this check to be performed in constant time. 
+
+After checking for all possible cliques we will have retained the maximum
+value found, representing the 'chaingroup' with the most silver coins in
+its vessels.
+
+Overall this runs in $O(E^2)$ time and $O(V + E)$ memory.
