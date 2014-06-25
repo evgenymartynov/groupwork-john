@@ -1,1 +1,59 @@
-\section{f}
+\section{First Date}
+
+Problem summary: given a date in the Julian calendar, find the number of days that must
+be added to determine its corresponding date in the Gregorian calendar.
+
+This problem can be simply achieved by converting the provided date into its respective
+'Julian Day Count', which is a uniform count of days from a remote epoch in the past.
+At this epoch, -4712 January 1 1200 GMT, the Julian Day Count is considered zero.
+
+To perform conversion from Gregorian date into Julian Day Count we perform the following:
+
+\begin{enumerate}
+\item if the month is jan/feb, subtract one from the year and add 12 to the month (they are 
+considered to be the 13th and 14th months of the previous year. \\
+\item then use the following formula, dropping the fractional part of all multiplications 
+  and divisions. \\
+\end{enumerate}
+
+\begin{verbatim}
+A = Y / 100
+B = A / 4
+C = 2 - A + B
+E = 365.25 * (Y + 4716)
+F = 30.6001 * (M+1)
+JD = C + D + E + F - 1524.5
+\end{verbatim}
+
+NOTE: If we wish to convert a Julian date into its corresponding Julian Day Count we
+use this same formula with $C=0$.
+
+This formula determines the Julian Day Number for the beginning of the date represented by
+year $Y$, month $M$ and day $D$ and it will always add an additional 12 hours due to the
+Julian day beginning at noon GMT. It can be verified by setting Y = 1582, M = 10, D = 14 
+to see that it indeed does give you the known Julian Day Count for the beginning of the 
+Julian calendar (2299160.5) as represented by its first adjusted day in the Gregorian calendar.
+
+Further conversion from a Julian Day Count to a Gregorian date can be performed using another
+formula as follows (where $JD$ is the Julian Day Count):
+
+\begin{verbatim}
+Z = JD + 0.5;
+F = Z - floor(Z);
+W = (Z - 1867216.25) / 36524.25;
+X = W / 4;
+A = Z + 1 + W - X;
+B = A + 1524;
+C = (B - 122.1) / 365.25;
+D = (365.25 * C;
+E = (B - D) / 30.6001;
+DAY   = B - D - 30.6001 * E + F;
+MONTH = (E > 13) ? E - 13 : E - 1;
+YEAR  = (MONTH < 3) ? C - 4715 : C - 4716;
+\end{verbatim}
+
+We get our desired answer then by using these formulas to convert the provided Julian
+date into its corresponding Gregorian date, using the Julian Day Count as an intermediate
+format.
+
+Overall this runs in $O(1)$ time and memory.

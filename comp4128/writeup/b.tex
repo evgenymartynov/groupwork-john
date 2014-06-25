@@ -10,7 +10,7 @@ maximum value clique then we must simply search for all possible cliques of
 this size and retain the maximum value seen so far. 
 
 Checking $n=2$ cliques simply requires checking the endpoints of each edge, 
-requiring $O(E)$ steps. 
+requiring $O(E)$ steps. A simple array of edges was used for this stage. 
 
 To consider all cliques where $n=3$, we take each edge and consider adding 
 every vertex in the graph to it. If adding a vertex forms a clique then we 

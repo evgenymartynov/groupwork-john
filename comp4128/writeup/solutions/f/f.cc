@@ -4,12 +4,6 @@
 #include <algorithm>
 using namespace std;
 
-const int MAX_YEARS = 10000;
-const int JULIAN_LEAPYEAR = 1;
-const int GREGORIAN_LEAPYEAR = 2;
-const double BEGIN_JD = 2299160.5; // 04-10-1582 julian / 15-10-1582 gregorian
-int leap_year[MAX_YEARS];
-
 void print_date(double JD) {
   double Z = (int)(JD + 0.5);
   double F = Z - (int)Z;
