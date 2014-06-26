@@ -1,107 +1,65 @@
-#include <stdio.h>
-#include <string.h>
+#include <cstdio>
+#include <cstring>
+#include <cstdlib>
+#include <algorithm>
+using namespace std;
 
-#define MAX_K (7)
-#define MAX(a, b) (a > b ? a : b)
-#define MIN(a, b) (a < b ? a : b)
+const int MAX_K = 7;
 
-int rows, n;
+int k, N;
 int cols[MAX_K];
-int depth[MAX_K][MAX_K];
 int grid[MAX_K][MAX_K];
-int finished;
-int ans;
+int dp[1024 * 1024];
 
-inline int min(int x, int y) {
-  int up = (y == 0) ? 0 : grid[y-1][x];
-  int left = (x == 0) ? up + 1 : grid[y][x-1];
-  return MAX(left, up + 1);
-}
+int brute(int y, int x) {
 
-inline int max(int x, int y) {
-  int up = (y == 0) ? n : grid[y-1][x];
-  int left = (x == 0) ? up + 1 : grid[y][x-1];
-  return (n - depth[y][x]);
-}
+  if (y >= k) 
+    return 1;
+  if (x >= cols[y])
+    return brute(y + 1, 0);
 
-int increment(int y) {
-  if (y < 0) 
-    return 0;
-
-  for (int x = cols[y] - 1; x >= 0; x--) {
-    if (grid[y][x] < max(x, y)) {
-      grid[y][x]++;
-      for (int i = x + 1; i < cols[y]; i++) {
-        grid[y][i] = min(i, y);
-      }
-      return 1;
+  int hash = 0;
+  if (x == 0 && (y == 2)) {
+    for (int i = 0; i < cols[y-1]; i++) {
+      hash *= N;
+      hash += grid[y-1][i] - 1;
     }
   }
+  if (dp[hash] != -1)
+    return dp[hash];
 
-  if (y == 0) 
-    printf("finished!\n");
-  return 0;
-}
+  int s = 0;
+  if (y > 0) 
+    s = max(s, grid[y-1][x] + 1);
+  if (x > 0) 
+    s = max(s, grid[y][x-1]);
 
-void debug_print() {
-  for (int y = 0; y < rows; y++) {
-    for (int x = 0; x < cols[y]; x++) {
-      printf("%d ", grid[y][x]); 
-    }
-    printf("\n");
+  int cnt = 0;
+  for (int i = s; i <= N; i++) {
+    grid[y][x] = i;
+    cnt += brute(y, x + 1);
   }
-  printf("--\n");
+
+  if (dp[hash] == -1 && hash != 0) 
+    dp[hash] = cnt;
+
+  return cnt;
 }
 
 int main() {
-  while (scanf("%d", &rows) == 1) {
-
-    finished = 0;
-    for (int y = 0; y < rows; y++) {
-      scanf("%d", &cols[y]);
+  while (scanf("%d", &k) == 1) {
+    for (int i = 0; i < k; i++) {
+      scanf("%d", &cols[i]);  
     }
+    scanf("%d", &N);
+    memset(dp, -1, sizeof(dp));
 
-    scanf("%d", &n);
-    memset(depth, -1, sizeof(depth));
-    for (int y = 0; y < rows; y++) {
-      for (int x = 0; x < cols[y]; x++) {
-        for (int i = y; i >= 0; i--) {
-          depth[i][x]++;
-        }
-      }
-    }
-
-    for (int y = 0; y < rows; y++) {
-      for (int x = 0; x < cols[y]; x++) {
-        grid[y][x] = min(x, y);
-      }
-    }
-
-    ans = 1;
-    debug_print();
-    for (int row = rows - 1; row >= 0; row--) {
-      printf("doing row %d\n", row);
-      while (increment(row)) {
-        ans++;
-        for (int y = row + 1; y < rows; y++) {
-          for (int x = 0; x < cols[y]; x++) {
-            grid[y][x] = min(x, y);
-          }
-        }
-        debug_print();
-        for (int current = rows - 1; current > row; current--) {
-          while (increment(current)) {
-            debug_print();
-            ans++;
-          }
-        }
-      }
+    int ans = 0;
+    for (int i = 1; i <= N; i++) {
+      grid[0][0] = i;
+      ans += brute(0, 1);
     }
     printf("%d\n", ans);
   }
   return 0;
 }
-
-// 1: (1,2,3,4) * (2,3,4) = 12 ways
-// 2: (2,3,4) * (3,4) = 6 ways
-// 3: (3, 4) * (4) = 2 ways = 20 ways
