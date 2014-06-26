@@ -3,4 +3,26 @@
 Problem summary: given a young diagram and value for $n$, enumerate the 
 possible semi-standard young tableaux.
 
-Overall this runs in $O(WHO THE FUCK KNOWS)$ time and memory.
+Due to the relatively small problem size the enumeration is able to be
+calculated through brute force with some additional caching. To begin,
+we set the top left cell with all values from 1 to $N$ and recurse on
+the cell to its right which will further recurse through the entire
+young diagram.
+
+The recursive function itself will determine the minimum value for the
+current cell and iterate through all values between this and $N$, 
+recursively setting the cell to its right. Once the row is complete the
+recursion will fall to the next row until the entire diagram has been
+traversed. In this manner all possible permutations for the cells are
+tried and counted.
+
+This approach in and of itself was not sufficient to run in time so
+trial and error was conducted to determine a suitable form of caching.
+It was discovered that caching the results for the second row provided
+the most significant speed increase. Running through tests on the
+resulting code by hand it was determined that the maximum value for
+problem was around 30 million, which was fast enough for the given
+constraints.
+
+Overall this runs in $O(ans)$ time and $O(k)$ memory, where the maximum
+value for the answer is as previously discussed.
